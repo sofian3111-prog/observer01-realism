@@ -1,0 +1,11 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: observer-realism-
+spec:
+  entrypoint: main
+  templates:
+  - name: main
+    container:
+      image: observer-core:latest
+      command: [python, /app/core/app.py]

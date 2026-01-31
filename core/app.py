@@ -1,25 +1,22 @@
 import sys
 import os
-
-# Adding the modules path to the system
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from modules.realism.engine import RealismEngine
 
-def initialize_observer():
-    print("[Observer-01] Initializing System...")
-    
-    # Initialize the Realism Engine
+def run_observer_system():
+    print("[Observer-01] Starting Intelligent Vision System...")
     engine = RealismEngine()
     
-    # Run lighting enhancement
-    engine.enhance_lighting(intensity=2.0)
+    # Looking for your photo
+    photo = engine.scan_for_images()
     
-    # Apply textures
-    engine.apply_textures()
-    
-    print("[Observer-01] System is now Cinematic and Ready.")
+    if photo:
+        print(f"[Observer-01] Image found: {photo}")
+        engine.apply_cinematic_filter(photo)
+        print("[Observer-01] Workflow complete.")
+    else:
+        print("[Observer-01] No images found. Please check inputs/ folder.")
 
 if __name__ == "__main__":
-    initialize_observer()
+    run_observer_system()
 

@@ -1,12 +1,22 @@
 import sys
 import os
 import time
+import getpass
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from modules.realism.engine import RealismEngine
 
 def start_observer_auto_mode():
-    print("--- [Observer-01: Phase 6 - Active Monitoring] ---")
+    # Security Layer
+    secret_key = "2026"
+    print("--- [Observer-01: Security Access] ---")
+    user_input = getpass.getpass("Enter Access Key: ")
+
+    if user_input != secret_key:
+        print("Access Denied: Unauthorized User.")
+        return
+
+    print("Access Granted. Initializing...")
     engine = RealismEngine()
     
     try:

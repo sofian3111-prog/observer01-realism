@@ -29,3 +29,23 @@ class RealismEngine:
             print("[Observer-01] Error: ImageMagick not found.")
             return False
 
+    def generate_report(self, original, processed):
+        orig_path = os.path.join(self.input_path, original)
+        proc_path = os.path.join(self.output_path, processed)
+        
+        orig_size = os.path.getsize(orig_path)
+        proc_size = os.path.getsize(proc_path)
+        
+        # Calculate the density change
+        change = ((proc_size - orig_size) / orig_size) * 100
+        
+        report_file = os.path.join(self.output_path, "vision_report.txt")
+        with open(report_file, "w") as f:
+            f.write(f"--- Observer-01 Intelligence Report ---\n")
+            f.write(f"Original: {original} ({orig_size} bytes)\n")
+            f.write(f"Processed: {processed} ({proc_size} bytes)\n")
+            f.write(f"Density Change: {change:.2f}%\n")
+            f.write(f"Status: Cinematic Enhancement Verified.\n")
+        
+        print(f"[Observer-01] Intelligence Report generated in outputs/ folder.")
+

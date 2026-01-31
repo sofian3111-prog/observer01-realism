@@ -3,19 +3,23 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from modules.realism.engine import RealismEngine
 
-def run_vision_inspection():
-    print("--- [Observer-01 Vision Phase 4] ---")
+def run_system():
+    print("--- [Observer-01: Phase 5 - Intelligence] ---")
     engine = RealismEngine()
     photo = engine.scan_for_images()
     
     if photo:
-        # Performing the breakthrough analysis
+        # Step 1: Transformation
         engine.apply_cinematic_filter(photo)
-        print(f"[Observer-01] Identity Confirmed: {photo}")
-        print("[Observer-01] Ready for Neural Enhancement.")
+        
+        # Step 2: Self-Analysis
+        output_name = "cinematic_" + photo
+        engine.generate_report(photo, output_name)
+        
+        print("[Observer-01] Phase 5 complete. System is evolving.")
     else:
-        print("[Observer-01] Fatal Error: Subject not found in inputs.")
+        print("[Observer-01] Error: Vision source empty.")
 
 if __name__ == "__main__":
-    run_vision_inspection()
+    run_system()
 

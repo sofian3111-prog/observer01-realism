@@ -8,48 +8,41 @@ from modules.realism.engine import RealismEngine
 
 def start_observer():
     secret = "2026"
-    # ANSI Color Codes for Terminal UI
-    blue = "\033[94m"
-    yellow = "\033[93m"
-    green = "\033[92m"
-    cyan = "\033[96m"
-    red = "\033[91m"
-    reset = "\033[0m"
+    blue, yellow, green, cyan, red, reset = "\033[94m", "\033[93m", "\033[92m", "\033[96m", "\033[91m", "\033[0m"
 
     print(f"{blue}" + "="*40 + f"{reset}")
-    print(f"{yellow}OBSERVER-01 CONTROL UNIT{reset}")
+    print(f"{yellow}OBSERVER-01: PHASE 17 ACTIVE{reset}")
     print(f"{blue}" + "="*40 + f"{reset}")
     
-    try:
-        attempt = getpass.getpass("Auth Token Required: ")
-    except Exception:
-        attempt = input("Auth Token Required: ")
-
-    if attempt != secret:
-        print(f"{red}ACCESS DENIED: Unauthorized User.{reset}")
+    token = getpass.getpass("Auth Token: ")
+    if token != secret:
+        print(f"{red}Access Denied.{reset}")
         return
 
-    print(f"{green}SYSTEM ONLINE: Monitoring Assets...{reset}\n")
+    print(f"{green}Protection Shield: Enabled{reset}\n")
     engine = RealismEngine()
     
     try:
         while True:
-            photo = engine.scan_for_images()
-            if photo:
-                print(f"{cyan}[DETECTED]{reset} Target: {photo}")
-                # Processing and logging
-                data = engine.apply_cinematic_filter(photo)
-                # Archiving and returning timestamp
-                ts = engine.archive_session(photo)
+            target = engine.scan_for_images()
+            if target:
+                print(f"{cyan}[DETECTED]{reset} {target}")
+                result = engine.apply_cinematic_filter(target)
                 
-                print(f"{green}[SUCCESS]{reset} Metadata: {data}")
-                print(f"{green}[ARCHIVE]{reset} Reference ID: {ts}\n")
-                print("\a") # Sound beep
-            
+                if result:
+                    archive_id = engine.archive_session(target)
+                    if archive_id:
+                        print(f"{green}[SUCCESS]{reset} Logged as: {archive_id}")
+                    else:
+                        print(f"{red}[ERROR]{reset} Archiving failed.")
+                else:
+                    print(f"{yellow}[REJECTED]{reset} File corrupt or empty. Purging...")
+                    os.remove(os.path.join(engine.input_path, target))
+                
+                print("\a")
             time.sleep(2)
-            
     except KeyboardInterrupt:
-        print(f"\n{yellow}[HALTED]{reset} System Suspended Safely.")
+        print(f"\n{yellow}[OFFLINE]{reset} Standby mode.")
 
 if __name__ == "__main__":
     start_observer()

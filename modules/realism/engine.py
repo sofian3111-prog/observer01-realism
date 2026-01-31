@@ -29,31 +29,48 @@ class RealismEngine:
     def analyze_image(self, image_path):
         cmd = f"magick identify -format '%m | %wx%h' {image_path}"
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-        return result.stdout.strip() if result.returncode == 0 else "Offline-Mode"
+        return result.stdout.strip() if result.returncode == 0 else "Analysis Error"
 
     def apply_cinematic_filter(self, image_name):
         input_file = os.path.join(self.input_path, image_name)
         output_file = os.path.join(self.output_path, "cinematic_" + image_name)
-        data = self.analyze_image(input_file)
+        
+        if not os.path.exists(input_file) or os.path.getsize(input_file) < 100:
+            return None
+
+        # Phase 19: Time-based Logic
+        hour = datetime.datetime.now().hour
+        if 6 <= hour < 18:
+            effect = "-modulate 100,120,100 -fill orange -colorize 10%"
+            mode = "DAY_MODE"
+        else:
+            effect = "-modulate 80,110,100 -fill blue -colorize 15%"
+            mode = "NIGHT_MODE"
+
+        data = f"{self.analyze_image(input_file)} | {mode}"
+        
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO logs (timestamp, filename, metadata) VALUES (?, ?, ?)", 
                        (datetime.datetime.now().isoformat(), image_name, data))
         conn.commit()
         conn.close()
-        cmd = f"magick {input_file} -brightness-contrast 10x20 {output_file}"
+
+        cmd = f"magick {input_file} {effect} {output_file}"
         subprocess.run(cmd, shell=True)
         return data
 
     def archive_session(self, image_name):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         archive_path = os.path.join(self.output_path, f"archive_{timestamp}")
-        os.makedirs(archive_path, exist_ok=True)
-        processed_file = "cinematic_" + image_name
+        processed_file = os.path.join(self.output_path, "cinematic_" + image_name)
         original_file = os.path.join(self.input_path, image_name)
-        if os.path.exists(os.path.join(self.output_path, processed_file)):
-            shutil.move(os.path.join(self.output_path, processed_file), archive_path)
-        if os.path.exists(original_file):
-            os.remove(original_file)
-        return timestamp
+
+        if os.path.exists(processed_file):
+            os.makedirs(archive_path, exist_ok=True)
+            shutil.move(processed_file, archive_path)
+            if os.path.exists(original_file):
+                os.remove(original_file)
+            return timestamp
+        return None
 

@@ -1,11 +1,21 @@
-# Observer-01: The Future of Vision Engineering
+# Observer-01: Automated Vision Intelligence
 
-**A Transcendental Vision Framework** This system represents the first stage of a methodological evolution in image processing, bridging the gap between current cognitive logic and future-ready architectures.
+Observer-01 is a specialized automation system designed to monitor, process, and archive visual data in real-time. Built for efficiency and stability, it operates as a system-level tool in Unix-like environments.
 
-## Current Phase: Logic Foundations
-- **Modular Core:** High-efficiency processing pipelines.
-- **Realism Engine:** Advanced logic for cinematic metadata generation.
-- **Structure:** Scalable environment for future vision integration.
+## Core Features
+- **Active Monitoring**: Real-time folder watching for new visual targets.
+- **Cinematic Processing**: Automated image enhancement using ImageMagick integration.
+- **Auto-Archiving**: Time-stamped session storage for data integrity.
+- **Zero-Loop Logic**: Automatic cleanup of input buffers to prevent redundant processing.
 
-*Status: Architecture Stabilized. Logic Simulation: Active.*
+## System Architecture
+The project is structured into three main layers:
+1. **Core**: The heartbeat of the system (`app.py`).
+2. **Modules**: The processing engine (`engine.py`).
+3. **Storage**: Organized `inputs`, `outputs`, and `archives`.
+
+## How to Run
+Once installed, the system can be invoked from any terminal session:
+```bash
+observer
 

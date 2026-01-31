@@ -26,6 +26,11 @@ class RealismEngine:
         with open(report_file, "w") as f:
             f.write(f"Target: {image_name}\nStatus: Verified\n")
 
+    def notify_user(self, message):
+        # Audible beep notification inside terminal
+        print("\a") 
+        print(f"--- [NOTIFICATION] --- {message}")
+
     def archive_session(self, image_name):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         archive_path = os.path.join(self.output_path, f"archive_{timestamp}")
@@ -44,5 +49,5 @@ class RealismEngine:
         if os.path.exists(original_file):
             os.remove(original_file)
             
-        print(f"[Observer-01] Archived: archive_{timestamp}")
+        self.notify_user(f"Observer-01: Session {timestamp} archived.")
 

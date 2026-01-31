@@ -1,0 +1,2 @@
+Target: my_photo.jpg
+Status: Verified

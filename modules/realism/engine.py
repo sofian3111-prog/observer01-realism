@@ -38,7 +38,6 @@ class RealismEngine:
         if not os.path.exists(input_file) or os.path.getsize(input_file) < 100:
             return None
 
-        # Phase 19: Time-based Logic
         hour = datetime.datetime.now().hour
         if 6 <= hour < 18:
             effect = "-modulate 100,120,100 -fill orange -colorize 10%"
@@ -56,7 +55,8 @@ class RealismEngine:
         conn.commit()
         conn.close()
 
-        cmd = f"magick {input_file} {effect} {output_file}"
+        # Watermark and Filter Command
+        cmd = f"magick {input_file} {effect} -fill white -gravity SouthEast -pointsize 25 -annotate +20+20 'OBSERVER-01' {output_file}"
         subprocess.run(cmd, shell=True)
         return data
 
@@ -65,12 +65,25 @@ class RealismEngine:
         archive_path = os.path.join(self.output_path, f"archive_{timestamp}")
         processed_file = os.path.join(self.output_path, "cinematic_" + image_name)
         original_file = os.path.join(self.input_path, image_name)
-
         if os.path.exists(processed_file):
             os.makedirs(archive_path, exist_ok=True)
             shutil.move(processed_file, archive_path)
-            if os.path.exists(original_file):
-                os.remove(original_file)
+            if os.path.exists(original_file): os.remove(original_file)
             return timestamp
         return None
+
+    def generate_daily_report(self):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM logs")
+        total = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM logs WHERE metadata LIKE '%DAY_MODE%'")
+        day = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM logs WHERE metadata LIKE '%NIGHT_MODE%'")
+        night = cursor.fetchone()[0]
+        report = f"OBSERVER-01 REPORT\nTotal: {total}\nDay: {day}\nNight: {night}"
+        report_path = os.path.join(self.output_path, "daily_report.txt")
+        with open(report_path, "w") as f: f.write(report)
+        conn.close()
+        return report_path
 
